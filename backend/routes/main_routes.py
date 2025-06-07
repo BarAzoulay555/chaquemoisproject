@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from database.db import get_db_connection
 from datetime import datetime, timedelta
+from utils.invoice_utils import create_invoice_if_not_exists
 
 main_bp = Blueprint('main', __name__, url_prefix='/api')
 
@@ -44,7 +45,7 @@ def get_orders():
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT o.id, o.quantity, o.status, o.created_at,
+        SELECT o.id, o.product_id,o.quantity, o.status, o.created_at,
                o.note, o.urgent,                           
                p.name as product_name,
                s.name as supplier_name
@@ -71,6 +72,7 @@ def get_orders():
         else:
             if minutes_passed >= 2:
                 order['status'] = "הוזמנה אושרה"
+                create_invoice_if_not_exists(order, conn)
             elif minutes_passed >= 1:
                 order['status'] = "הזמנה התקבלה אצל ספק"
 
@@ -96,6 +98,16 @@ def get_low_stock():
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM products WHERE quantity < reorder_level")
+    rows = cursor.fetchall()
+    conn.close()
+    return jsonify([dict(row) for row in rows])
+
+
+@main_bp.route('/invoices', methods=['GET'])
+def get_invoices():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM invoices ORDER BY id ASC")
     rows = cursor.fetchall()
     conn.close()
     return jsonify([dict(row) for row in rows])

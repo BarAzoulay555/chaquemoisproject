@@ -36,6 +36,10 @@ export default function Navbar() {
           <li className="nav-item">
             <Link className={`nav-link ${isActive("/suppliers") ? "active" : ""}`} to="/suppliers">ספקים</Link>
           </li>
+
+          <li className="nav-item">
+            <Link className={`nav-link ${isActive("/invoices") ? "active" : ""}`} to="/invoices">חשבוניות</Link>
+          </li>
         </ul>
 
         <Link className="btn btn-outline-light" to="/login">התנתקות</Link>

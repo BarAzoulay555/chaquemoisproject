@@ -5,8 +5,8 @@ import Home from './pages/Home';
 import Suppliers from './pages/Suppliers';
 import Orders from './pages/Orders';
 import LoginPage from './pages/Login';
-import InventoryPage from './pages/Inventory';
 import Inventory from './pages/Inventory';
+import Invoices from './components/Invoices';
 
 export default function App() {
   return (
@@ -18,6 +18,7 @@ export default function App() {
         <Route path="/orders" element={<Orders />} />
         <Route path="/home" element={<Home />} />
         <Route path="/inventory" element={<Inventory />} />
+        <Route path="/invoices" element={<Invoices />} />
       </Routes>
     </Router>
   );
