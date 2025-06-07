@@ -11,35 +11,45 @@ def insert_products():
             "quantity": 150,
             "reorder_level": 20,
             "price": 220,
-            "image": "BeigeRubySkirt.png"
+            "image": "BeigeRubySkirt.png",
+            "size": "OneSize",
+            "color": "Beige"
         },
         {
             "name": "Black Ruby Skirt",
-            "quantity": 150,
+            "quantity": 12,
             "reorder_level": 20,
             "price": 210,
-            "image": "BlackRubySkirt.png"
+            "image": "BlackRubySkirt.png",
+            "size": "OneSize",
+            "color": "Black"
         },
         {
             "name": "Emma dress Black",
-            "quantity": 200,
+            "quantity": 15,
             "reorder_level": 20,
             "price": 300,
-            "image": "EmmadressBlack.png"
+            "image": "EmmadressBlack.png",
+            "size": "OneSize",
+            "color": "Black"
         },
         {
             "name": "White Ruby Skirt",
             "quantity": 150,
             "reorder_level": 20,
             "price": 220,
-            "image": "WhiteRubySkirt.png"
+            "image": "WhiteRubySkirt.png",
+            "size": "OneSize",
+            "color": "White"
         },
         {
             "name": "Emma dress white",
-            "quantity": 200,
+            "quantity": 10,
             "reorder_level": 20,
             "price": 300,
-            "image": "EmmadressWhite.png"
+            "image": "EmmadressWhite.png",
+            "size": "OneSize",
+            "color": "White"
         }
     ]
 
@@ -48,14 +58,16 @@ def insert_products():
 
     for product in products:
         cursor.execute("""
-            INSERT INTO products (name, quantity, reorder_level, price, image)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO products (name, quantity, reorder_level, price, image, size, color)
+            VALUES (?, ?, ?, ?, ?,?,?)
         """, (
             product["name"],
             product["quantity"],
             product["reorder_level"],
             product["price"],
-            product["image"]
+            product["image"],
+            product["size"],
+            product["color"]
         ))
 
     conn.commit()

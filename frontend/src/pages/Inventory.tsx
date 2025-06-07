@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import OrderModal from "../components/OrderModal";
 
 type Product = {
   id: number;
@@ -8,6 +9,8 @@ type Product = {
   reorder_level: number;
   price: number;
   image: string;
+  color: string;
+  size: string;
 };
 
 export default function Inventory() {
@@ -16,6 +19,8 @@ export default function Inventory() {
   const [editProduct, setEditProduct] = useState<Partial<Product> | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
 
   useEffect(() => {
     fetchProducts();
@@ -80,19 +85,23 @@ export default function Inventory() {
                 />
                 <div className="card-body text-center">
                   <h5>{product.name}</h5>
-                  <p>
-                    Quantity:{" "}
-                    <span className={product.quantity < product.reorder_level ? "text-danger fw-bold" : ""}>
-                      {product.quantity}
-                    </span>
-                  </p>
-                  <p>Minimum stock: {product.reorder_level}</p>
-                  <p>Price: {product.price.toLocaleString()} ₪</p>
+                  <div>
+                    <p className="mb-1">Size: {product.size}</p>
+                    <p className="mb-1">Color: {product.color}</p>
+                    <p className="mb-1">
+                      Quantity:{" "}
+                      <span className={product.quantity < product.reorder_level ? "text-danger fw-bold" : ""}>
+                        {product.quantity}
+                      </span>
+                    </p>
+                    <p className="mb-1">Minimum stock: {product.reorder_level}</p>
+                    <p className="mb-1">Price: {product.price.toLocaleString()} ₪</p>
+                  </div>
                   <div className="d-flex justify-content-around mt-3">
                     <button className="btn btn-outline-secondary btn-m" onClick={() => { setEditProduct(product); setShowEditModal(true); }}>
                       Edit
                     </button>
-                    <button className="btn btn-outline-success btn-m" onClick={() => handleOrder(product.id)}>
+                    <button className="btn btn-outline-success btn-m" onClick={() => setSelectedProduct(product)}>
                       Order
                     </button>
                   </div>
@@ -101,6 +110,14 @@ export default function Inventory() {
             </div>
           ))}
         </div>
+      )}
+          {/* 📦 פופ-אפ הזמנה */}
+          {selectedProduct && (
+        <OrderModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onSuccess={fetchProducts}
+        />
       )}
     </div>
   );

@@ -7,6 +7,9 @@ def create_tables():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
+    c.execute('''DROP TABLE IF EXISTS suppliers;''');
+
+
     c.execute('''
     CREATE TABLE IF NOT EXISTS suppliers (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -17,7 +20,7 @@ def create_tables():
         num_products INTEGER,
         rating REAL,
         reliability INTEGER,
-        response_time_minutes INTEGER,
+        response_time INTEGER,
         payment_terms TEXT
     )
     ''')
@@ -33,22 +36,40 @@ def create_tables():
   reorder_level INTEGER NOT NULL DEFAULT 5,
   price INTEGER NOT NULL,
   image TEXT NOT NULL,
+  size TEXT NOT NULL,
+  color TEXT NOT NULL,
   supplier_id INTEGER,
   FOREIGN KEY (supplier_id) REFERENCES suppliers(id)
 );
 
     ''')
 
+    c.execute('''DROP TABLE IF EXISTS purchase_orders;''');
+
+
     c.execute('''
     CREATE TABLE IF NOT EXISTS purchase_orders (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   product_id INTEGER NOT NULL,
   quantity INTEGER NOT NULL,
-  status TEXT DEFAULT 'ממתינה',
+  status TEXT DEFAULT 'ממתינה', 
+  supplier_id INTEGER,
+  note TEXT,
+  urgent BOOLEAN DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (product_id) REFERENCES products(id)
+  FOREIGN KEY (product_id) REFERENCES products(id),
+  FOREIGN KEY (supplier_id) REFERENCES suppliers(id)
 );
 ''')
+    
+    c.execute('''
+  SELECT * FROM purchase_orders
+''')
+    
+    rows = c.fetchall()
+
+    for row in rows: 
+        print(row)
 
     conn.commit()
     conn.close()
