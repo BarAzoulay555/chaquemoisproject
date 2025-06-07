@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify
-from backend.database.db import get_db_connection
+from database.db import get_db_connection
 
-main_bp = Blueprint('main', __name__)
+main_bp = Blueprint('main', __name__, url_prefix='/api')
 
 # ✅ GET /api/products
-@main_bp.route('/api/products', methods=['GET'])
+@main_bp.route('/products', methods=['GET'])
 def get_products():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -15,7 +15,7 @@ def get_products():
     return jsonify(products)
 
 # ✅ POST /api/orders
-@main_bp.route('/api/orders', methods=['POST'])
+@main_bp.route('/orders', methods=['POST'])
 def create_order():
     data = request.get_json()
     product_id = data.get("product_id")
@@ -33,7 +33,7 @@ def create_order():
     return jsonify({"success": True, "message": "ההזמנה נוספה"}), 201
 
 # ✅ GET /api/orders
-@main_bp.route('/api/orders', methods=['GET'])
+@main_bp.route('/orders', methods=['GET'])
 def get_orders():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -48,7 +48,7 @@ def get_orders():
     return jsonify([dict(order) for order in orders])
 
 # ✅ GET /api/suppliers
-@main_bp.route('/api/suppliers', methods=['GET'])
+@main_bp.route('/suppliers', methods=['GET'])
 def get_suppliers():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -56,3 +56,13 @@ def get_suppliers():
     suppliers = cursor.fetchall()
     conn.close()
     return jsonify([dict(s) for s in suppliers])
+
+# ✅ GET /api/low-stock
+@main_bp.route('/low-stock', methods=['GET'])
+def get_low_stock():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM products WHERE quantity < reorder_level")
+    rows = cursor.fetchall()
+    conn.close()
+    return jsonify([dict(row) for row in rows])

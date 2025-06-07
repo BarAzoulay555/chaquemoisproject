@@ -1,17 +1,18 @@
 from backend.database.db import get_db_connection
 
-def check_tables():
+def check_products():
     conn = get_db_connection()
     cursor = conn.cursor()
-
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
-    tables = cursor.fetchall()
-
-    print("📦 Tables in DB:")
-    for table in tables:
-        print("-", table["name"])
-
+    cursor.execute("SELECT * FROM products")
+    rows = cursor.fetchall()
     conn.close()
 
+    if not rows:
+        print("📭 אין מוצרים בטבלה.")
+    else:
+        print("📦 מוצרים בטבלה:")
+        for row in rows:
+            print(dict(row))
+
 if __name__ == "__main__":
-    check_tables()
+    check_products()

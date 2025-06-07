@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
-from backend.routes.main_routes import main_bp
+from routes.main_routes import main_bp
+
 
 # יצירת אפליקציית Flask
 app = Flask(__name__)

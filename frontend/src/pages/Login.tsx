@@ -1,21 +1,30 @@
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import LowStockAlert from '../components/LowStockAlert';
 
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showAlert, setShowAlert] = useState(false)
+  const navigate = useNavigate()
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (username === 'admin' && password === '1234') {
-      alert('Login successful');
+      setShowAlert(true)
     } else {
       setError('שם משתמש או סיסמה שגויים');
     }
   };
 
+  const handleAlertClosed = () => {
+    setShowAlert(false)
+    navigate('/home')
+  }
+
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100">
+    <div className="container d-flex justify-content-center align-items-center vh-100 position-relative">
       <div className="card p-4" style={{ width: '100%', maxWidth: '400px' }}>
         <div className="text-center mb-3">
           <img src="/images/logo.png" alt="CHAQUEMOIS Logo" style={{ height: '80px' }} />
@@ -49,6 +58,9 @@ export default function Login() {
           <button className="btn btn-dark w-100" type="submit">התחבר</button>
         </form>
       </div>
+
+      {/* התראת מלאי נמוך – מוצגת מעל הטופס */}
+      {showAlert && <LowStockAlert onClose={handleAlertClosed} />}
     </div>
   );
 }
