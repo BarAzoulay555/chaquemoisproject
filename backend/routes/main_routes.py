@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from database.db import get_db_connection
-from datetime import datetime, timedelta
+from datetime import datetime
 from utils.invoice_utils import create_invoice_if_not_exists
 
 main_bp = Blueprint('main', __name__, url_prefix='/api')
@@ -15,6 +15,37 @@ def get_products():
     conn.close()
     products = [dict(row) for row in rows]
     return jsonify(products)
+
+# ✅ PUT /api/products/<product_id>/add-stock
+@main_bp.route('/products/<int:product_id>/add-stock', methods=['PUT'])
+def add_stock(product_id):
+    data = request.get_json()
+    added_quantity = data.get('quantity')
+
+    if added_quantity is None:
+        return jsonify({"success": False, "message": "כמות לעדכון חסרה"}), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # בדיקה אם המוצר קיים
+    cursor.execute("SELECT quantity FROM products WHERE id = ?", (product_id,))
+    product = cursor.fetchone()
+
+    if not product:
+        conn.close()
+        return jsonify({"success": False, "message": "מוצר לא נמצא"}), 404
+
+    # עדכון הכמות
+    new_quantity = product['quantity'] + added_quantity
+    cursor.execute(
+        "UPDATE products SET quantity = ? WHERE id = ?",
+        (new_quantity, product_id)
+    )
+    conn.commit()
+    conn.close()
+
+    return jsonify({"success": True, "message": "המלאי עודכן בהצלחה", "new_quantity": new_quantity}), 200
 
 # ✅ POST /api/orders
 @main_bp.route('/orders', methods=['POST'])
@@ -32,8 +63,8 @@ def create_order():
     cursor = conn.cursor()
     cursor.execute("""
         INSERT INTO purchase_orders (product_id, quantity, supplier_id, note, urgent)
-        VALUES (?, ?,?, ?, ?)
-    """, (product_id, quantity,supplier_id, note, urgent))
+        VALUES (?, ?, ?, ?, ?)
+    """, (product_id, quantity, supplier_id, note, urgent))
     conn.commit()
     conn.close()
     return jsonify({"success": True, "message": "ההזמנה נוספה"}), 201
@@ -45,8 +76,8 @@ def get_orders():
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT o.id, o.product_id,o.quantity, o.status, o.created_at,
-               o.note, o.urgent,                           
+        SELECT o.id, o.product_id, o.quantity, o.status, o.created_at,
+               o.note, o.urgent,
                p.name as product_name,
                s.name as supplier_name
         FROM purchase_orders o
@@ -55,14 +86,11 @@ def get_orders():
     """)
     rows = cursor.fetchall()
     updated_orders = []
-
     now = datetime.now()
 
     for row in rows:
         order = dict(row)
         created_at = datetime.fromisoformat(order['created_at'])
-
-        # לוגיקת עדכון סטטוס
         minutes_passed = (now - created_at).total_seconds() / 60
         supplier_name = order['supplier_name']
 
@@ -80,7 +108,6 @@ def get_orders():
 
     conn.close()
     return jsonify(updated_orders)
-
 
 # ✅ GET /api/suppliers
 @main_bp.route('/suppliers', methods=['GET'])
@@ -102,7 +129,7 @@ def get_low_stock():
     conn.close()
     return jsonify([dict(row) for row in rows])
 
-
+# ✅ GET /api/invoices
 @main_bp.route('/invoices', methods=['GET'])
 def get_invoices():
     conn = get_db_connection()

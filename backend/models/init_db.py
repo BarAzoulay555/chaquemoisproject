@@ -7,7 +7,7 @@ def create_tables():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    # c.execute('''DROP TABLE IF EXISTS suppliers;''');
+    c.execute('''DROP TABLE IF EXISTS suppliers;''');
 
 
     c.execute('''
@@ -25,7 +25,7 @@ def create_tables():
     )
     ''')
 
-    # c.execute('''DROP TABLE IF EXISTS products;''');
+    c.execute('''DROP TABLE IF EXISTS products;''');
 
 
     c.execute('''
@@ -44,7 +44,7 @@ def create_tables():
 
     ''')
 
-    # c.execute('''DROP TABLE IF EXISTS purchase_orders;''');
+    c.execute('''DROP TABLE IF EXISTS purchase_orders;''');
 
 
     c.execute('''
@@ -61,7 +61,7 @@ def create_tables():
   FOREIGN KEY (supplier_id) REFERENCES suppliers(id)
 );
 ''')
-    # c.execute('''DROP TABLE IF EXISTS invoices;''');
+    c.execute('''DROP TABLE IF EXISTS invoices;''');
 
     c.execute('''
   CREATE TABLE IF NOT EXISTS invoices (

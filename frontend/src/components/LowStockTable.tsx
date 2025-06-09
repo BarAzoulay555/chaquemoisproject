@@ -23,7 +23,7 @@ export default function LowStockTable() {
 
   return (
     <div className="mt-5">
-      <h5 className="mb-3 text-danger">📉 פריטים שדורשים הזמנה מחדש</h5>
+      <h5 className="mb-3 text-danger text-center"> פריטים שדורשים הזמנה מחדש</h5>
       <table className="table table-bordered table-hover text-center">
         <thead className="table-light">
           <tr>

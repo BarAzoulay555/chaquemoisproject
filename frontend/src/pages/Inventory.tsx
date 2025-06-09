@@ -29,7 +29,7 @@ export default function Inventory() {
   const fetchProducts = () => {
     axios.get("http://localhost:5000/api/products")
       .then(res => {
-        console.log("📦 מוצרים שהתקבלו מהשרת:", res.data); // 🔍 שורת בדיקה
+        console.log(" מוצרים שהתקבלו מהשרת:", res.data); // 🔍 שורת בדיקה
         setProducts(res.data);
       })
       .catch(err => console.error("שגיאה בטעינה:", err));
@@ -111,7 +111,7 @@ export default function Inventory() {
           ))}
         </div>
       )}
-          {/* 📦 פופ-אפ הזמנה */}
+          {/*  פופ-אפ הזמנה */}
           {selectedProduct && (
         <OrderModal
           product={selectedProduct}

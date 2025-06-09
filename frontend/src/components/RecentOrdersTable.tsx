@@ -29,7 +29,7 @@ export default function RecentOrdersTable() {
 
   return (
     <div className="mt-5">
-      <h5 className="mb-3 text-primary">🧾 הזמנות אחרונות</h5>
+      <h5 className="mb-3 text-primary text-center"> הזמנות אחרונות</h5>
       <table className="table table-striped text-center">
         <thead className="table-light">
           <tr>
