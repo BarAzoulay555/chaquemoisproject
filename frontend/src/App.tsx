@@ -7,6 +7,8 @@ import Orders from './pages/Orders';
 import LoginPage from './pages/Login';
 import Inventory from './pages/Inventory';
 import Invoices from './pages/Invoices';
+import DBData from "./pages/DBData";
+
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -20,6 +22,7 @@ export default function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/inventory" element={<Inventory />} />
         <Route path="/invoices" element={<Invoices />} />
+        <Route path="/db-data" element={<DBData />} />
       </Routes>
     </Router>
   );
